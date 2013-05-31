@@ -1,0 +1,21 @@
+{
+	"name": "jquery.zeroclipboard",
+	"version": "0.1.0",
+	"description": "Modify by zeroclipboard v1.1.7",
+	"homepage": "",
+	"author": {
+	    "name": "David",
+	    "email": "qowera@qq.com",
+		"url": "http://www.ishgo.cn"
+	},
+	"require": ["jQuery"],
+	"devDependencies": {
+		"grunt": "*",
+		"grunt-contrib-uglify": "*",
+		"grunt-contrib-concat": "*",
+		"grunt-contrib-jshint": "*",
+		"grunt-contrib-jasmine": "*",
+		"grunt-contrib-compress": "*",
+		"grunt-contrib-watch": "*"
+	}
+}

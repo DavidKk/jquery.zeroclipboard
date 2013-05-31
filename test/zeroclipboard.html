@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ZeroClipboard jQuery Version</title>
+<script type="text/javascript">
+var trace = window.trace = function(msg) {
+	if ('object' === typeof console) {
+		console.log(msg);
+		
+	} else if ('object' === typeof opera) {
+		opera.postError(msg);
+		
+	} else if ('object' === typeof java && 'object' === typeof java.lang) {
+		java.lang.System.out.println(msg);
+	}
+};
+</script>
+<script type="text/javascript" charset="utf-8" src="../lib/jquery.1.9.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="../dist/jquery.zeroclipboard.js"></script>
+<script type="text/javascript">
+$(function() {
+	//jquery 1.9 $.fn.live remove
+	$(document).on('copy', 'button', function(e) {
+		var text = $('#copyText').val();
+		e.copyText(text);
+		trace('copy success');
+		$('#test').focus();
+	});
+
+	$('#copy').bind('copy', function(e) {
+		var text = $('#copyText').val();
+		e.copyText(text);
+		trace('copy success');
+		$('#test').focus();
+	});
+
+	//可以通过 正常方式 绑定相应事件
+	$(document).on('click', 'button', function(e) {
+		trace('Trigger this handle');
+	});
+
+	$('#del').bind('click', function() {
+		$('button').remove();
+	});
+
+	$('#add').bind('click', function() {
+		$('body').append('<button>copy btn</button>');
+	});
+
+	$('#test').bind('focusout', function() {
+		$(this).val('');
+		$('#copyText').val('copy Text ' + Math.ceil(Math.random() * 10000));
+	});
+});
+</script>
+</head>
+<style>
+a {
+	padding: 0 10px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	line-height: 20px;
+	cursor: pointer;
+	text-align: center;
+	font-weight: bold;
+	font-family: "微软雅黑";
+}
+textarea {
+	width: 400px;
+	height: 200px;
+	overflow: hidden;
+	resize: none;
+	font-size: 24px;
+	font-weight: bold;
+}
+</style>
+<body style="height:10000px;">
+<h2>请在服务器上测试</h2>
+<p>IE copy text 不能为空字符串 否则无效 应该是as的问题</p>
+<p>注意 必须支持 SWF</p>
+
+<textarea id="copyText">copy Text</textarea>
+<textarea id="test" placeholder="test area, auto clear"></textarea>
+<br><br>
+
+<a id="add">add copy btn</a>
+<a id="del">del copy btn</a>
+<a id="copy">copy btn</a>
+<br><br>
+
+<button>copy btn</button>
+</body>
+</html>

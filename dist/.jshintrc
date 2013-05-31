@@ -1,0 +1,24 @@
+{
+	"quotmark": "single",
+	"undef": true,
+	"boss": true,
+	"eqeqeq": true,
+	"noarg": true,
+	"eqnull": true,
+	"expr": true,
+	"jquery": true,
+	"node": true,
+	
+	"globals": {
+		"window": true,
+		"document": true,
+		"jQuery": true,
+		"CSS3": true,
+		"Image": true,
+		"define": true,
+		"module": true,
+		"navigator": true,
+		"ActiveXObject": true,
+		"location": true
+	}
+}
