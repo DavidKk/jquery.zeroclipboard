@@ -8,6 +8,9 @@ module.exports = function(grunt) {
 			, ' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;'
 			, ' * Description <%= pkg.description %>'
 			, ' * Require <%= pkg.require ? pkg.require.join(" ") : "" %>'
+			, ' *'
+			, ' * 能够绑定 selector, 每次 createElement 时都会拥有该方法, 不用重复绑定'
+ 			, ' * $.fn.copy 即可调用, 但是必须点击才能触发复制 因为不点击会禁止'
 		].concat(Array.prototype.splice.call(arguments, 0, arguments.length), '**/\n\n').join('\n');
 	}
 
@@ -27,7 +30,15 @@ module.exports = function(grunt) {
 					banner: createBanner()
 				},
 				files: [
-					{ dest: 'dist/<%= pkg.name %>.js', src: ['src/zeroclipboard.js', 'src/app.js']}
+					{
+						dest: 'dist/<%= pkg.name %>.js', src: [
+							'src/wrap-begin.js',
+							'src/options.js',
+							'src/zeroclipboard.js',
+							'src/app.js',
+							'src/wrap-end.js'
+						]
+					}
 				]
 			}
 		},

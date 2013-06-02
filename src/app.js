@@ -1,3 +1,5 @@
+
+// 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
 	throw '[ZeroClipboard]: swf is not suport';
 }
@@ -5,21 +7,11 @@ if (false === ZeroClipboard.prototype._suport) {
 var zero = new ZeroClipboard();
 zero._constructor();
 
-if ('undefined' !== typeof module) {
-	module.exports = zero;
-
-} else if ('function' === typeof define && define.amd) {
-	define(function() {
-		return zero;
-	});
-} else {
-	window.ZeroClipboard = zero;
-}
-
 if ($.event.special.copy) {
 	throw '[ZeroClipboard]: $.event.special.copy is already exists';
 }
 
+// extends jquery.event
 $.event.special.copy = (function() {
 	var mouseoverHandle = function() {
 		zero.fixed(this);
@@ -51,6 +43,7 @@ $.event.special.copy = (function() {
 	};
 })();
 
+// extend jquery api
 $.fn.copy = function(func) {
 	return func && this.bind('copy', func);
 };

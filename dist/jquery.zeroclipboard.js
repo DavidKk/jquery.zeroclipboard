@@ -1,11 +1,16 @@
-/*!jquery.zeroclipboard - v0.1.0 - 2013-06-01
- * Homepage 
+/*!jquery.zeroclipboard - v0.1.0 - 2013-06-02
+ * Homepage https://github.com/DavidKk/jquery.zeroclipboard
  * Copyright 2013 David;
  * Description Modify by zeroclipboard v1.1.7
  * Require jQuery
+ *
+ * 能够绑定 selector, 每次 createElement 时都会拥有该方法, 不用重复绑定
+ * $.fn.copy 即可调用, 但是必须点击才能触发复制 因为不点击会禁止
 **/
 
-var ZeroClipboard = function() {};
+;(function($) {
+
+// options 配置文件
 var options = {
 	debug: $.debug || true,
 	SWF_PATH: '../swf/ZeroClipboard.swf',
@@ -25,6 +30,9 @@ var options = {
 	})(),
 	ALLOW_SCRIPT_ACCESS: 'sameDomain'
 };
+
+/*!	ZeroClipboard 主程序 **/
+var ZeroClipboard = function() {};
 
 ZeroClipboard.prototype = {
 	_suport: (function() {
@@ -148,6 +156,8 @@ ZeroClipboard.prototype = {
 		return this;
 	}
 };
+
+// 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
 	throw '[ZeroClipboard]: swf is not suport';
 }
@@ -155,21 +165,11 @@ if (false === ZeroClipboard.prototype._suport) {
 var zero = new ZeroClipboard();
 zero._constructor();
 
-if ('undefined' !== typeof module) {
-	module.exports = zero;
-
-} else if ('function' === typeof define && define.amd) {
-	define(function() {
-		return zero;
-	});
-} else {
-	window.ZeroClipboard = zero;
-}
-
 if ($.event.special.copy) {
 	throw '[ZeroClipboard]: $.event.special.copy is already exists';
 }
 
+// extends jquery.event
 $.event.special.copy = (function() {
 	var mouseoverHandle = function() {
 		zero.fixed(this);
@@ -201,6 +201,8 @@ $.event.special.copy = (function() {
 	};
 })();
 
+// extend jquery api
 $.fn.copy = function(func) {
 	return func && this.bind('copy', func);
 };
+})(jQuery);
