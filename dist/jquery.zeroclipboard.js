@@ -1,4 +1,4 @@
-/*!jquery.zeroclipboard - v0.1.0 - 2013-06-02
+/*!jquery.zeroclipboard - v0.1.0 - 2013-06-09
  * Homepage https://github.com/DavidKk/jquery.zeroclipboard
  * Copyright 2013 David;
  * Description Modify by zeroclipboard v1.1.7
@@ -165,6 +165,17 @@ if (false === ZeroClipboard.prototype._suport) {
 var zero = new ZeroClipboard();
 zero._constructor();
 
+if ('undefined' !== typeof module) {
+	module.exports = zero;
+
+} else if ('function' === typeof define && define.amd) {
+	define(function() {
+		return zero;
+	});
+} else {
+	window.ZeroClipboard = zero;
+}
+
 if ($.event.special.copy) {
 	throw '[ZeroClipboard]: $.event.special.copy is already exists';
 }
@@ -205,4 +216,5 @@ $.event.special.copy = (function() {
 $.fn.copy = function(func) {
 	return func && this.bind('copy', func);
 };
+
 })(jQuery);

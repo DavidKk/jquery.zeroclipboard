@@ -7,6 +7,17 @@ if (false === ZeroClipboard.prototype._suport) {
 var zero = new ZeroClipboard();
 zero._constructor();
 
+if ('undefined' !== typeof module) {
+	module.exports = zero;
+
+} else if ('function' === typeof define && define.amd) {
+	define(function() {
+		return zero;
+	});
+} else {
+	window.ZeroClipboard = zero;
+}
+
 if ($.event.special.copy) {
 	throw '[ZeroClipboard]: $.event.special.copy is already exists';
 }
