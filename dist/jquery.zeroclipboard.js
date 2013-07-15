@@ -1,4 +1,4 @@
-/*!jquery.zeroclipboard - v0.1.0 - 2013-06-09
+/*!jquery.zeroclipboard - v0.1.0 - 2013-07-14
  * Homepage https://github.com/DavidKk/jquery.zeroclipboard
  * Copyright 2013 David;
  * Description Modify by zeroclipboard v1.1.7
@@ -9,6 +9,41 @@
 **/
 
 ;(function($) {
+function loadSwfHandle() {
+	var options = this.options,
+	CACHE_TOKEN = (options.debug ? ('?' + (Date.now ? Date.now() : new Date().getTime())) : ''),
+
+	$ctn = $('<div class="global-zeroclipboard-container" style="cursor:pointer;"></div>')
+		.css({
+			position: 'absolute',
+			left: -9999,
+			top: -9999,
+			width: 15,
+			height: 15,
+			zIndex: 99999,
+			opcity: 0,
+			visiable: 'hidden'
+		})
+		.html([
+			'<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="global-zeroclipboard-flash-bridge" width="100%" height="100%">',
+				'<param name="movie" value="' + options.BASE_PATH + options.SWF_PATH + CACHE_TOKEN + '"/>',
+				'<param name="allowScriptAccess" value="' + options.ALLOW_SCRIPT_ACCESS + '"/>',
+				'<param name="scale" value="exactfit"/>',
+				'<param name="loop" value="false"/>',
+				'<param name="menu" value="false"/>',
+				'<param name="quality" value="best"/>',
+				'<param name="bgcolor" value="#ffffff"/>',
+				'<param name="wmode" value="transparent"/>',
+				'<param name="flashvars" value=""/>',
+				'<embed src="' + options.BASE_PATH + options.SWF_PATH + CACHE_TOKEN + '" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="100%" height="100%" name="global-zeroclipboard-flash-bridge" allowScriptAccess="always" allowFullScreen="false" type="application/x-shockwave-flash" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="" scale="exactfit"></embed>',
+			'</object>'
+		].join(''))
+		.appendTo('body');
+
+	this.htmlBridge = $ctn.get(0);
+	this.flashBridge = document['global-zeroclipboard-flash-bridge'] || this.htmlBridge.children[0].lastElementChild;
+	this.ready = false;
+}
 
 // options 配置文件
 var options = {
@@ -31,8 +66,16 @@ var options = {
 	ALLOW_SCRIPT_ACCESS: 'sameDomain'
 };
 
-/*!	ZeroClipboard 主程序 **/
-var ZeroClipboard = function() {};
+
+var ZeroClipboard = function(options) {
+	var self = this;
+	this.options = $.extend({}, $.fn.copy.defaults, options);
+	
+	$(document).ready(function() {
+		loadSwfHandle.apply(self);
+		self = loadSwfHandle = undefined;
+	});
+};
 
 ZeroClipboard.prototype = {
 	_suport: (function() {
@@ -45,48 +88,7 @@ ZeroClipboard.prototype = {
 
 		return false;
 	})(),
-	_constructor: (function() {
-		var loadSwfHandle = function() {
-			var CACHE_TOKEN = (options.debug ? ('?' + (Date.now ? Date.now() : new Date().getTime())) : '');
-			var $ctn = $('<div class="global-zeroclipboard-container" style="cursor:pointer;"></div>').css({
-				position: 'absolute',
-				left: -9999,
-				top: -9999,
-				width: 15,
-				height: 15,
-				zIndex: 99999,
-				opcity: 0,
-				visiable: 'hidden'
-			})
-			.html([
-			'<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="global-zeroclipboard-flash-bridge" width="100%" height="100%">',
-				'<param name="movie" value="' + options.BASE_PATH + options.SWF_PATH + CACHE_TOKEN + '"/>',
-				'<param name="allowScriptAccess" value="' + options.ALLOW_SCRIPT_ACCESS + '"/>',
-				'<param name="scale" value="exactfit"/>',
-				'<param name="loop" value="false"/>',
-				'<param name="menu" value="false"/>',
-				'<param name="quality" value="best"/>',
-				'<param name="bgcolor" value="#ffffff"/>',
-				'<param name="wmode" value="transparent"/>',
-				'<param name="flashvars" value=""/>',
-				'<embed src="' + options.BASE_PATH + options.SWF_PATH + CACHE_TOKEN + '" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="100%" height="100%" name="global-zeroclipboard-flash-bridge" allowScriptAccess="always" allowFullScreen="false" type="application/x-shockwave-flash" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="" scale="exactfit"></embed>',
-			'</object>'
-			].join(''))
-			.appendTo('body');
-
-			this.htmlBridge = $ctn.get(0);
-			this.flashBridge = document['global-zeroclipboard-flash-bridge'] || this.htmlBridge.children[0].lastElementChild;
-			this.ready = false;
-		};
-
-		return function() {
-			var self = this;
-			$(document).ready(function() {
-				loadSwfHandle.apply(self);
-				self = loadSwfHandle = undefined;
-			});
-		};
-	})(),
+	constructor: ZeroClipboard,
 	copyText: function(text) {
 		if (this.ready && 'string' === typeof text) {
 			this.flashBridge.setText(text);
@@ -157,13 +159,47 @@ ZeroClipboard.prototype = {
 	}
 };
 
+
+var old = $.fn.copy;
+$.fn.copy = function(func) {
+	return func && this.bind('copy', func);
+};
+
+// Default Options
+$.fn.copy.defaults = {
+	debug: $.debug || true,
+	SWF_PATH: '../swf/ZeroClipboard.swf',
+	BASE_PATH: (function() {
+		var $scripts = $('head').children('script');
+		var len = $scripts.length;
+		var js = $scripts[len-1].src, local = location.href.replace(/\?+(.*)/, '');
+		var basePath = js.substring(0, js.lastIndexOf('/') + 1).replace(/core\/$/, '');
+		
+		var protocolPreg = /^(https?|ftp|gopher|telnet|file|notes|ms-help):\/\//;
+		if (basePath.match(protocolPreg)) return basePath;
+
+		var protocol = local.match(protocolPreg);
+		protocol = protocol && protocol[0];
+
+		return protocol + document.domain + '/' + basePath;
+	})(),
+	ALLOW_SCRIPT_ACCESS: 'sameDomain'
+};
+
+// Resolve Conflict
+$.fn.copy.noConflict = function() {
+	$.fn.copy = old;
+	return this;
+};
+
+
+
 // 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
 	throw '[ZeroClipboard]: swf is not suport';
 }
 
 var zero = new ZeroClipboard();
-zero._constructor();
 
 if ('undefined' !== typeof module) {
 	module.exports = zero;
@@ -211,10 +247,5 @@ $.event.special.copy = (function() {
 		}
 	};
 })();
-
-// extend jquery api
-$.fn.copy = function(func) {
-	return func && this.bind('copy', func);
-};
 
 })(jQuery);

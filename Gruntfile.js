@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 					{
 						dest: 'dist/<%= pkg.name %>.js', src: [
 							'src/wrap-begin.js',
+							'src/utils.js',
 							'src/options.js',
 							'src/zeroclipboard.js',
 							'src/app.js',

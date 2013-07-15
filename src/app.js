@@ -1,11 +1,45 @@
 
+
+var old = $.fn.copy;
+$.fn.copy = function(func) {
+	return func && this.bind('copy', func);
+};
+
+// Default Options
+$.fn.copy.defaults = {
+	debug: $.debug || true,
+	SWF_PATH: '../swf/ZeroClipboard.swf',
+	BASE_PATH: (function() {
+		var $scripts = $('head').children('script');
+		var len = $scripts.length;
+		var js = $scripts[len-1].src, local = location.href.replace(/\?+(.*)/, '');
+		var basePath = js.substring(0, js.lastIndexOf('/') + 1).replace(/core\/$/, '');
+		
+		var protocolPreg = /^(https?|ftp|gopher|telnet|file|notes|ms-help):\/\//;
+		if (basePath.match(protocolPreg)) return basePath;
+
+		var protocol = local.match(protocolPreg);
+		protocol = protocol && protocol[0];
+
+		return protocol + document.domain + '/' + basePath;
+	})(),
+	ALLOW_SCRIPT_ACCESS: 'sameDomain'
+};
+
+// Resolve Conflict
+$.fn.copy.noConflict = function() {
+	$.fn.copy = old;
+	return this;
+};
+
+
+
 // 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
 	throw '[ZeroClipboard]: swf is not suport';
 }
 
 var zero = new ZeroClipboard();
-zero._constructor();
 
 if ('undefined' !== typeof module) {
 	module.exports = zero;
@@ -53,8 +87,3 @@ $.event.special.copy = (function() {
 		}
 	};
 })();
-
-// extend jquery api
-$.fn.copy = function(func) {
-	return func && this.bind('copy', func);
-};
