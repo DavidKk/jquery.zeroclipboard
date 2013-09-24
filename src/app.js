@@ -36,7 +36,7 @@ $.fn.copy.noConflict = function() {
 
 // 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
-	throw '[ZeroClipboard]: swf is not suport';
+	trace('[ZeroClipboard]: swf is not suport', 'warn');
 }
 
 var zero = new ZeroClipboard();
@@ -53,7 +53,7 @@ if ('undefined' !== typeof module) {
 }
 
 if ($.event.special.copy) {
-	throw '[ZeroClipboard]: $.event.special.copy is already exists';
+	trace('[ZeroClipboard]: $.event.special.copy is already exists', 'warn');
 }
 
 // extends jquery.event

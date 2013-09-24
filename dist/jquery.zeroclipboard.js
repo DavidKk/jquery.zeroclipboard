@@ -1,4 +1,4 @@
-/*!jquery.zeroclipboard - v0.1.0 - 2013-07-14
+/*!jquery.zeroclipboard - v0.1.0 - 2013-09-18
  * Homepage https://github.com/DavidKk/jquery.zeroclipboard
  * Copyright 2013 David;
  * Description Modify by zeroclipboard v1.1.7
@@ -9,6 +9,7 @@
 **/
 
 ;(function($) {
+'use strict';
 function loadSwfHandle() {
 	var options = this.options,
 	CACHE_TOKEN = (options.debug ? ('?' + (Date.now ? Date.now() : new Date().getTime())) : ''),
@@ -43,6 +44,20 @@ function loadSwfHandle() {
 	this.htmlBridge = $ctn.get(0);
 	this.flashBridge = document['global-zeroclipboard-flash-bridge'] || this.htmlBridge.children[0].lastElementChild;
 	this.ready = false;
+}
+
+// debug 调戏专用
+function trace(msg, type) {
+	if ('object' === typeof console) {
+		type = type || 'log';
+		console[type](msg);
+		
+	} else if ('object' === typeof opera) {
+		opera.postError(msg);
+		
+	} else if ('object' === typeof java && 'object' === typeof java.lang) {
+		java.lang.System.out.println(msg);
+	}
 }
 
 // options 配置文件
@@ -196,7 +211,7 @@ $.fn.copy.noConflict = function() {
 
 // 必须支持 swf 才能使用该功能
 if (false === ZeroClipboard.prototype._suport) {
-	throw '[ZeroClipboard]: swf is not suport';
+	trace('[ZeroClipboard]: swf is not suport', 'warn');
 }
 
 var zero = new ZeroClipboard();
@@ -213,7 +228,7 @@ if ('undefined' !== typeof module) {
 }
 
 if ($.event.special.copy) {
-	throw '[ZeroClipboard]: $.event.special.copy is already exists';
+	trace('[ZeroClipboard]: $.event.special.copy is already exists', 'warn');
 }
 
 // extends jquery.event

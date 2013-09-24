@@ -1,14 +1,20 @@
 {
-	"quotmark": "single",
-	"undef": true,
-	"boss": true,
-	"eqeqeq": true,
-	"noarg": true,
-	"eqnull": true,
-	"expr": true,
-	"jquery": true,
-	"node": true,
-	
+	"quotmark"	: "single",
+	"undef"		: true,
+	"boss"		: true,
+	"eqeqeq"	: true,
+	"noarg"		: true,
+	"eqnull"	: true,
+	"expr"		: true,
+	"jquery"	: true,
+	"node"		: true,
+    "validthis"	: true,
+    "laxcomma" 	: true,
+    "browser"  	: true,
+    "eqnull"   	: true,
+    "laxbreak"	: true,
+    "smarttabs" : true,
+
 	"globals": {
 		"window": true,
 		"document": true,
@@ -19,6 +25,12 @@
 		"module": true,
 		"navigator": true,
 		"ActiveXObject": true,
-		"location": true
+		"location": true,
+		"seajs": true,
+		"alert": true,
+		"history": true,
+		"DD_belatedPNG": true,
+		"opera": true,
+		"java": true
 	}
 }

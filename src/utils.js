@@ -33,3 +33,17 @@ function loadSwfHandle() {
 	this.flashBridge = document['global-zeroclipboard-flash-bridge'] || this.htmlBridge.children[0].lastElementChild;
 	this.ready = false;
 }
+
+// debug 调戏专用
+function trace(msg, type) {
+	if ('object' === typeof console) {
+		type = type || 'log';
+		console[type](msg);
+		
+	} else if ('object' === typeof opera) {
+		opera.postError(msg);
+		
+	} else if ('object' === typeof java && 'object' === typeof java.lang) {
+		java.lang.System.out.println(msg);
+	}
+}
